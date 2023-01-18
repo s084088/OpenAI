@@ -1,7 +1,7 @@
 ﻿using SyNemo.OpenAI;
 
 //注册
-OpenAI.Register("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");
+OpenAI.Register("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");
 
 //创建会话
 Chat chatGPT = new();
@@ -14,8 +14,6 @@ string q3 = "介绍一下他的其他贡献";
 string a1 = await chatGPT.Ask(q1);
 string a2 = await chatGPT.Ask(q2);
 string a3 = await chatGPT.Ask(q3);
-
-
 
 Console.WriteLine("我: " + q1);
 Console.WriteLine("AI: " + a1);

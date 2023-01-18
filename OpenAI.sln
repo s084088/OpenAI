@@ -7,6 +7,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyNemo.OpenAI", "SyNemo.OpenAI\SyNemo.OpenAI.csproj", "{C4BEAF93-3C61-45E8-93F9-A34EB4FA55D2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A18378D5-5191-42BF-A0D4-0B74F700F88B}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{A8CB2B90-F135-405F-B6DC-296F38CC0D07}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C060F60F-FE32-4327-BE4D-3912CCE99E28}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +33,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{977056FE-F685-4929-A1B2-E1D5A4EB14D4} = {C060F60F-FE32-4327-BE4D-3912CCE99E28}
+		{C4BEAF93-3C61-45E8-93F9-A34EB4FA55D2} = {A8CB2B90-F135-405F-B6DC-296F38CC0D07}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2CF84C00-D867-46A0-A351-1FE55C67E040}
