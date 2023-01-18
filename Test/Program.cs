@@ -1,7 +1,7 @@
 ﻿using SyNemo.OpenAI;
 
 //注册
-OpenAI.Register("sk-NwaKF7b5ZCrVnmI4QDoIT3BlbkFJVtSoxlkXm4OXOcOaQH10Q");
+OpenAI.Register("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");
 
 //创建会话
 Chat chatGPT = new();
