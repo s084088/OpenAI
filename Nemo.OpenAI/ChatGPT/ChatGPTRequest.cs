@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Nemo.OpenAI.ChatGPT
+namespace SyNemo.OpenAI.ChatGPT
 {
     /// <summary>
     /// ChatGPT请求入参

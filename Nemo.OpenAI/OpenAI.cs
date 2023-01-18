@@ -1,4 +1,4 @@
-﻿namespace Nemo.OpenAI
+﻿namespace SyNemo.OpenAI
 {
     /// <summary>
     /// OpenAI基础设置

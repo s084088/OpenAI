@@ -3,10 +3,10 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Nemo.OpenAI.ChatGPT;
+using SyNemo.OpenAI.ChatGPT;
 using Newtonsoft.Json;
 
-namespace Nemo.OpenAI
+namespace SyNemo.OpenAI
 {
     /// <summary>
     /// 单个聊天对象

@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Nemo.OpenAI\Nemo.OpenAI.csproj" />
+    <ProjectReference Include="..\Nemo.OpenAI\SyNemo.OpenAI.csproj" />
   </ItemGroup>
 
 </Project>

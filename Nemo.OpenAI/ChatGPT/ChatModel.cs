@@ -1,4 +1,4 @@
-﻿namespace Nemo.OpenAI.ChatGPT
+﻿namespace SyNemo.OpenAI.ChatGPT
 {
     /// <summary>
     /// 聊天模型

@@ -1,4 +1,4 @@
-﻿using Nemo.OpenAI;
+﻿using SyNemo.OpenAI;
 
 //注册
 OpenAI.Register("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");

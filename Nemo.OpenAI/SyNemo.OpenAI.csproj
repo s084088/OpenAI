@@ -3,11 +3,12 @@
 	<PropertyGroup>
 		<TargetFrameworks>net5.0;net6.0;net7.0;</TargetFrameworks>
 
-		<Company>Leyixue</Company>
 		<Authors>Nemo</Authors>
 		<Version>1.0.0</Version>
-		<Description>OpenAI扩展包，包含 ChatGPT</Description>
+		<Description>目前包含 ChatGPT</Description>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<Title>OpenAI扩展包</Title>
+		<PackageProjectUrl>https://github.com/s084088/OpenAI.git</PackageProjectUrl>
 	</PropertyGroup>
 
 	<ItemGroup>

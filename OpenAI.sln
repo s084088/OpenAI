@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nemo.OpenAI", "Nemo.OpenAI\Nemo.OpenAI.csproj", "{B569A3E4-4B96-459A-AE1A-EAC007F3A708}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyNemo.OpenAI", "Nemo.OpenAI\SyNemo.OpenAI.csproj", "{B569A3E4-4B96-459A-AE1A-EAC007F3A708}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{977056FE-F685-4929-A1B2-E1D5A4EB14D4}"
 EndProject
