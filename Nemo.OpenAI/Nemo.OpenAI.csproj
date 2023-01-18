@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net5.0;net6.0;net7.0;</TargetFrameworks>
+
+		<Company>Leyixue</Company>
+		<Authors>Nemo</Authors>
+		<Version>1.0.0</Version>
+		<Description>OpenAI扩展包，包含 ChatGPT</Description>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+	</ItemGroup>
+
+</Project>
