@@ -71,6 +71,14 @@ namespace SyNemo.OpenAI
 
             ChatGPTResponse response = JsonConvert.DeserializeObject<ChatGPTResponse>(str);
 
+            if (response.error != null)
+            {
+                if (response.error.code == "invalid_api_key")
+                    throw new System.Exception("Key无效");
+
+                throw new System.Exception(response.error.message);
+            }
+
             string asw = response.choices[0].text.Trim();
 
             AddChat(Messages, user, ask);
