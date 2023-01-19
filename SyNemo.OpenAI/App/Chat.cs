@@ -35,9 +35,9 @@ namespace SyNemo.OpenAI
         {
             _config = config ?? new();
 
-            if (config.Messages != null)
+            if (_config.Messages != null)
             {
-                foreach (IChatMessage message in config.Messages)
+                foreach (IChatMessage message in _config.Messages)
                     AddChat(messages, message.User, message.Message);
             }
         }
