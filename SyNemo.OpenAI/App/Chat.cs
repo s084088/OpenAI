@@ -11,6 +11,9 @@ namespace SyNemo.OpenAI
     /// </summary>
     public class Chat
     {
+        private const string model = "text-davinci-003";
+        private const int maxTokens = 4096;
+
         private const string title = "以下是人类和AI的对话";
         private const string ai = "AI";
         private const string colon = "： ";
@@ -80,12 +83,12 @@ namespace SyNemo.OpenAI
 
             return new()
             {
-                model = "text-davinci-003",
+                model = model,
                 prompt = p,
                 temperature = _config.Temperature,
                 top_p = _config.Top_p,
 
-                max_tokens = 4096 - p.Length * 2,
+                max_tokens = maxTokens - p.Length * 2,
                 stop = new string[] { ai, _config.UserName }
             };
         }
@@ -115,7 +118,7 @@ namespace SyNemo.OpenAI
             {
                 ChatModel cm = chats[i];
                 string str = cm.User + colon + cm.Message + newLine;
-                if (str.Length + prompt.Length > 1000) break;
+                if (str.Length + prompt.Length > maxTokens / 4) break;
                 prompt = str + prompt;
             }
 
