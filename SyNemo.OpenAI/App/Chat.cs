@@ -20,18 +20,27 @@ namespace SyNemo.OpenAI
         private const string newLine = "\n";
 
         private readonly ChatConfig _config;
-        private readonly List<ChatModel> messages = new();
+        private readonly List<ChatMessageModel> messages = new();
 
         /// <summary>
         /// 聊天记录
         /// </summary>
-        public IEnumerable<ChatModel> Messages => messages.AsReadOnly();
+        public IEnumerable<ChatMessageModel> Messages => messages.AsReadOnly();
 
         /// <summary>
         /// 创建聊天
         /// </summary>
         /// <param name="config">聊天配置</param>
-        public Chat(ChatConfig config = null) => _config = config ?? new();
+        public Chat(ChatConfig config = null)
+        {
+            _config = config ?? new();
+
+            if (config.Messages != null)
+            {
+                foreach (IChatMessage message in config.Messages)
+                    AddChat(messages, message.User, message.Message);
+            }
+        }
 
         /// <summary>
         /// 发送信息
@@ -48,8 +57,8 @@ namespace SyNemo.OpenAI
 
             string asw = response.choices[0].text.Trim();
 
-            AddChat(messages, _config.UserName, ask, response.usage.prompt_tokens);
-            AddChat(messages, ai, asw, response.usage.completion_tokens);
+            AddChat(messages, ChatRole.User, ask, response.usage.prompt_tokens);
+            AddChat(messages, ChatRole.AI, asw, response.usage.completion_tokens);
             return asw;
         }
 
@@ -76,8 +85,8 @@ namespace SyNemo.OpenAI
         private ChatGPTRequest GetRequest(string ask)
         {
             ask = ask.Trim();
-            List<ChatModel> chats = Messages.ToList();
-            AddChat(chats, _config.UserName, ask);
+            List<ChatMessageModel> chats = Messages.ToList();
+            AddChat(chats, ChatRole.User, ask);
 
             string p = GetPrompt(chats);
 
@@ -101,7 +110,7 @@ namespace SyNemo.OpenAI
         /// <param name="message"></param>
         /// <param name="tokens"></param>
         /// <returns></returns>
-        private void AddChat(List<ChatModel> chats, string user, string message, int tokens = 0)
+        private void AddChat(List<ChatMessageModel> chats, ChatRole user, string message, int tokens = 0)
         {
             chats.Add(new() { User = user, Message = message, tokens = tokens });
         }
@@ -110,14 +119,14 @@ namespace SyNemo.OpenAI
         /// 获取聊天提示
         /// </summary>
         /// <returns></returns>
-        private string GetPrompt(List<ChatModel> chats)
+        private string GetPrompt(List<ChatMessageModel> chats)
         {
             string prompt = ai + colon;
 
             for (int i = chats.Count - 1; i >= 0; i--)
             {
-                ChatModel cm = chats[i];
-                string str = cm.User + colon + cm.Message + newLine;
+                ChatMessageModel cm = chats[i];
+                string str = GetRoleName(cm.User) + colon + cm.Message + newLine;
                 if (str.Length + prompt.Length > maxTokens / 4) break;
                 prompt = str + prompt;
             }
@@ -126,5 +135,17 @@ namespace SyNemo.OpenAI
 
             return prompt;
         }
+
+        /// <summary>
+        /// 获取用户名称
+        /// </summary>
+        /// <param name="role"></param>
+        /// <returns></returns>
+        private string GetRoleName(ChatRole role) => role switch
+        {
+            ChatRole.AI => ai,
+            ChatRole.User => _config.UserName,
+            _ => null,
+        };
     }
 }

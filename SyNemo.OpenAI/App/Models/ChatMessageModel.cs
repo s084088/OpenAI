@@ -5,12 +5,12 @@ namespace SyNemo.OpenAI.Models
     /// <summary>
     /// 聊天模型
     /// </summary>
-    public class ChatModel
+    public class ChatMessageModel: IChatMessage
     {
         /// <summary>
         /// 用户名
         /// </summary>
-        public string User { get; internal set; }
+        public ChatRole User { get; internal set; }
 
         /// <summary>
         /// 消息

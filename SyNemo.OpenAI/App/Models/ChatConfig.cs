@@ -1,4 +1,6 @@
-﻿namespace SyNemo.OpenAI.Models
+﻿using System.Collections.Generic;
+
+namespace SyNemo.OpenAI.Models
 {
     /// <summary>
     /// 聊天配置
@@ -19,5 +21,10 @@
         /// 用户名字， 默认为“Nemo”
         /// </summary>
         public string UserName { get; set; } = "Nemo";
+
+        /// <summary>
+        /// 历史对话
+        /// </summary>
+        public IEnumerable<IChatMessage> Messages { get; set; }
     }
 }
