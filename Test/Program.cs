@@ -6,7 +6,7 @@ OpenAI.Register("sk" + "-" + "QtOQWB52BRNSfUj3iGFOT3BlbkFJpo48ZGuPMbzbe1uFHoGC")
 //创建会话
 Chat chatGPT = new();
 
-string q1 = "我的OpenAI账户还有多少余额";
+string q1 = "什么是相对论";
 string q2 = "简单介绍一些他的生平";
 string q3 = "介绍一下他的其他贡献";
 

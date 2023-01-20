@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using SyNemo.OpenAI.ChatGPT.Models;
 using SyNemo.OpenAI.Models;
@@ -11,14 +10,6 @@ namespace SyNemo.OpenAI
     /// </summary>
     public class Chat
     {
-        private const string model = "text-davinci-003";
-        private const int maxTokens = 4096;
-
-        private const string title = "以下是人类和你的对话";
-        private const string ai = "你";
-        private const string colon = "： ";
-        private const string newLine = "\n";
-
         private readonly ChatConfig _config;
         private readonly List<ChatMessageModel> messages = new();
 
@@ -36,10 +27,8 @@ namespace SyNemo.OpenAI
             _config = config ?? new();
 
             if (_config.Messages != null)
-            {
-                foreach (IChatMessage message in _config.Messages)
-                    AddChat(messages, message.User, message.Message);
-            }
+                foreach (IChatMessage m in _config.Messages)
+                    messages.Add(new(m.User, m.Message));
         }
 
         /// <summary>
@@ -49,32 +38,18 @@ namespace SyNemo.OpenAI
         /// <returns></returns>
         public async Task<string> Ask(string ask)
         {
-            ChatGPTRequest request = GetRequest(ask);
-
+            ChatMessageModel userMessage = new(ChatRole.User, ask);
+            ChatGPTRequest request = GetRequest(userMessage);
             ChatGPTResponse response = await ChatGPT.ChatGPT.Ask(request);
+            ChatMessageModel aiMessage = new(ChatRole.AI, response.choices[0].text.Trim());
 
-            CheckResponse(response);
+            userMessage.Tokens = response.usage.prompt_tokens;
+            aiMessage.Tokens = response.usage.completion_tokens;
 
-            string asw = response.choices[0].text.Trim();
+            messages.Add(userMessage);
+            messages.Add(aiMessage);
 
-            AddChat(messages, ChatRole.User, ask, response.usage.prompt_tokens);
-            AddChat(messages, ChatRole.AI, asw, response.usage.completion_tokens);
-            return asw;
-        }
-
-        /// <summary>
-        /// 返回结果检查
-        /// </summary>
-        /// <param name="response"></param>
-        private void CheckResponse(ChatGPTResponse response)
-        {
-            if (response.error != null)
-            {
-                if (response.error.code == "invalid_api_key")
-                    throw new("Key无效");
-
-                throw new(response.error.message);
-            }
+            return aiMessage.Message;
         }
 
         /// <summary>
@@ -82,70 +57,40 @@ namespace SyNemo.OpenAI
         /// </summary>
         /// <param name="ask"></param>
         /// <returns></returns>
-        private ChatGPTRequest GetRequest(string ask)
+        private ChatGPTRequest GetRequest(ChatMessageModel ask)
         {
-            ask = ask.Trim();
-            List<ChatMessageModel> chats = Messages.ToList();
-            AddChat(chats, ChatRole.User, ask);
-
-            string p = GetPrompt(chats);
+            string _prompt = GetPrompt(ask);
 
             return new()
             {
-                model = model,
-                prompt = p,
+                model = ChatResource.Model,
+                prompt = _prompt,
                 temperature = _config.Temperature,
                 top_p = _config.Top_p,
 
-                max_tokens = maxTokens - p.Length * 2,
-                stop = new string[] { ai + colon, _config.UserName + colon }
+                max_tokens = ChatResource.MaxTokens - _prompt.Length * 2,
+                stop = new string[] { ChatResource.UserName, ChatResource.AiName }
             };
         }
 
         /// <summary>
-        /// 添加对话
+        /// 获取新对话的Prompt
         /// </summary>
-        /// <param name="chats"></param>
-        /// <param name="user"></param>
-        /// <param name="message"></param>
-        /// <param name="tokens"></param>
+        /// <param name="ask"></param>
         /// <returns></returns>
-        private void AddChat(List<ChatMessageModel> chats, ChatRole user, string message, int tokens = 0)
+        private string GetPrompt(ChatMessageModel ask)
         {
-            chats.Add(new() { User = user, Message = message, tokens = tokens });
-        }
+            string prompt = ask.GetMessage() + ChatResource.AiName;
 
-        /// <summary>
-        /// 获取聊天提示
-        /// </summary>
-        /// <returns></returns>
-        private string GetPrompt(List<ChatMessageModel> chats)
-        {
-            string prompt = ai + colon;
-
-            for (int i = chats.Count - 1; i >= 0; i--)
+            for (int i = messages.Count - 1; i >= 0; i--)
             {
-                ChatMessageModel cm = chats[i];
-                string str = GetRoleName(cm.User) + colon + cm.Message + newLine;
-                if (str.Length + prompt.Length > maxTokens / 4) break;
+                ChatMessageModel cm = messages[i];
+                string str = cm.GetMessage(); ;
+                if (str.Length + prompt.Length > ChatResource.MaxTokens / 4) break;
                 prompt = str + prompt;
             }
 
-            prompt = title + newLine + prompt;
-
-            return prompt;
+            return ChatResource.Title + prompt;
         }
-
-        /// <summary>
-        /// 获取用户名称
-        /// </summary>
-        /// <param name="role"></param>
-        /// <returns></returns>
-        private string GetRoleName(ChatRole role) => role switch
-        {
-            ChatRole.AI => ai,
-            ChatRole.User => _config.UserName,
-            _ => null,
-        };
     }
 }

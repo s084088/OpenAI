@@ -19,7 +19,17 @@ namespace SyNemo.OpenAI.ChatGPT
         {
             string str = await HttpHelper.Post(request);
 
-            return JsonConvert.DeserializeObject<ChatGPTResponse>(str);
+            ChatGPTResponse response = JsonConvert.DeserializeObject<ChatGPTResponse>(str);
+
+            if (response.error != null)
+            {
+                if (response.error.code == "invalid_api_key")
+                    throw new("Key无效");
+
+                throw new(response.error.message);
+            }
+
+            return response;
         }
     }
 }

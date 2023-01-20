@@ -18,11 +18,6 @@ namespace SyNemo.OpenAI.Models
         public float Top_p { get; set; } = 1f;
 
         /// <summary>
-        /// 用户名字， 默认为“Nemo”
-        /// </summary>
-        public string UserName { get; set; } = "Nemo";
-
-        /// <summary>
         /// 历史对话
         /// </summary>
         public IEnumerable<IChatMessage> Messages { get; set; }
