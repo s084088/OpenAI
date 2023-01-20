@@ -14,8 +14,8 @@ namespace SyNemo.OpenAI
         private const string model = "text-davinci-003";
         private const int maxTokens = 4096;
 
-        private const string title = "以下是人类和AI的对话";
-        private const string ai = "AI";
+        private const string title = "以下是人类和你的对话";
+        private const string ai = "你";
         private const string colon = "： ";
         private const string newLine = "\n";
 
@@ -98,7 +98,7 @@ namespace SyNemo.OpenAI
                 top_p = _config.Top_p,
 
                 max_tokens = maxTokens - p.Length * 2,
-                stop = new string[] { ai, _config.UserName }
+                stop = new string[] { ai + colon, _config.UserName + colon }
             };
         }
 
