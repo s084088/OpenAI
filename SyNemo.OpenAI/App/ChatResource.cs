@@ -14,7 +14,7 @@ namespace SyNemo.OpenAI
 
         public static string Title = "以下是人类和你的对话" + NewLine + NewLine;
 
-        public static int MaxTokens = 4000;
+        public static int MaxTokens = 3700;
 
 
         /// <summary>

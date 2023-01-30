@@ -4,7 +4,7 @@
 		<TargetFrameworks>net5.0;net6.0;net7.0;</TargetFrameworks>
 
 		<Authors>Nemo</Authors>
-		<Version>1.0.5</Version>
+		<Version>1.0.7</Version>
 		<Description>目前包含 ChatGPT</Description>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<Title>OpenAI扩展包</Title>
