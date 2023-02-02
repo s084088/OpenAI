@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
@@ -17,9 +18,16 @@ namespace SyNemo.OpenAI.Comm
 
         public static async Task<string> Post(object obj)
         {
-            HttpContent content = GetJsonContent(JsonConvert.SerializeObject(obj));
+            try
+            {
+                HttpContent content = GetJsonContent(JsonConvert.SerializeObject(obj));
 
-            return await (await _client.PostAsync(url, content)).Content.ReadAsStringAsync();
+                return await (await _client.PostAsync(url, content)).Content.ReadAsStringAsync();
+            }
+            catch (Exception e)
+            {
+                throw new OpenAIException(ErrorCode.NetFail, "网络异常", e);
+            }
         }
 
         private static HttpContent GetJsonContent(string json)

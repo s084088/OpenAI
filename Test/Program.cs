@@ -21,3 +21,16 @@ Console.WriteLine("我: " + q2);
 Console.WriteLine("AI: " + a2);
 Console.WriteLine("我: " + q3);
 Console.WriteLine("AI: " + a3);
+
+
+//对话
+string b1 = await chatGPT.AskWithOutContext(q1);
+string b2 = await chatGPT.AskWithOutContext(q2);
+string b3 = await chatGPT.AskWithOutContext(q3);
+
+Console.WriteLine("我: " + q1);
+Console.WriteLine("AI: " + b1);
+Console.WriteLine("我: " + q2);
+Console.WriteLine("AI: " + b2);
+Console.WriteLine("我: " + q3);
+Console.WriteLine("AI: " + b3);

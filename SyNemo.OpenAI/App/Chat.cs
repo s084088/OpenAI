@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using SyNemo.OpenAI.App.Models;
 using SyNemo.OpenAI.ChatGPT.Models;
 using SyNemo.OpenAI.Models;
 
@@ -36,10 +37,18 @@ namespace SyNemo.OpenAI
         /// </summary>
         /// <param name="ask">你当次讲的话</param>
         /// <returns></returns>
-        public async Task<string> Ask(string ask)
+        public async Task<string> Ask(string ask) => await Ask(new DialogueModel(ask));
+
+        /// <summary>
+        /// 发送信息
+        /// </summary>
+        /// <param name="model">当次的讲话模型</param>
+        /// <returns></returns>
+        public async Task<string> Ask(DialogueModel model)
         {
-            ChatMessageModel userMessage = new(ChatRole.User, ask);
-            ChatGPTRequest request = GetRequest(userMessage);
+            ChatMessageModel userMessage = new(ChatRole.User, model.Question);
+            string _prompt = GetPrompt(userMessage);
+            ChatGPTRequest request = GetRequest(_prompt);
             ChatGPTResponse response = await ChatGPT.ChatGPT.Ask(request);
             ChatMessageModel aiMessage = new(ChatRole.AI, response.choices[0].text.Trim());
 
@@ -49,29 +58,54 @@ namespace SyNemo.OpenAI
             messages.Add(userMessage);
             messages.Add(aiMessage);
 
-            return aiMessage.Message;
+            model.Prompt = _prompt;
+            model.Answer = aiMessage.Message;
+            model.SendToken = userMessage.Tokens;
+            model.ReceiveToken = aiMessage.Tokens;
+
+            return model.Answer;
+        }
+
+        /// <summary>
+        /// 发送信息,不使用上下文
+        /// </summary>
+        /// <param name="ask">你当次讲的话</param>
+        /// <returns></returns>
+        public async Task<string> AskWithOutContext(string ask) => await AskWithOutContext(new DialogueModel(ask));
+
+        /// <summary>
+        /// 发送信息,不使用上下文
+        /// </summary>
+        /// <param name="model">你当次的讲话模型</param>
+        /// <returns></returns>
+        public async Task<string> AskWithOutContext(DialogueModel model)
+        {
+            ChatGPTRequest request = GetRequest(model.Question);
+            ChatGPTResponse response = await ChatGPT.ChatGPT.Ask(request);
+
+            model.Prompt = model.Question;
+            model.Answer = response.choices[0].text.Trim();
+            model.SendToken = response.usage.prompt_tokens;
+            model.ReceiveToken = response.usage.completion_tokens;
+
+            return model.Answer;
         }
 
         /// <summary>
         /// 构建入参
         /// </summary>
-        /// <param name="ask"></param>
+        /// <param name="_prompt"></param>
         /// <returns></returns>
-        private ChatGPTRequest GetRequest(ChatMessageModel ask)
+        private ChatGPTRequest GetRequest(string _prompt) => new()
         {
-            string _prompt = GetPrompt(ask);
+            model = ChatResource.Model,
+            prompt = _prompt,
+            temperature = _config.Temperature,
+            top_p = _config.Top_p,
 
-            return new()
-            {
-                model = ChatResource.Model,
-                prompt = _prompt,
-                temperature = _config.Temperature,
-                top_p = _config.Top_p,
-
-                max_tokens = ChatResource.MaxTokens - _prompt.Length * 2,
-                stop = new string[] { ChatResource.UserName, ChatResource.AiName }
-            };
-        }
+            max_tokens = ChatResource.MaxTokens - _prompt.Length * 2,
+            stop = new string[] { ChatResource.UserName, ChatResource.AiName }
+        };
 
         /// <summary>
         /// 获取新对话的Prompt
