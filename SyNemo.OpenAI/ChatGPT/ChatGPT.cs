@@ -24,8 +24,11 @@ namespace SyNemo.OpenAI.ChatGPT
 
             if (response.error != null)
             {
-                if (response.error.code == "invalid_api_key")
+                if (response?.error?.code == "invalid_api_key")
                     throw new OpenAIException(ErrorCode.TokenInvalid, "Key无效");
+
+                if (response?.error?.message?.Contains("exceeded your current quota") == true)
+                    throw new OpenAIException(ErrorCode.Arrears, "账户欠费");
 
                 throw new Exception(response.error.message);
             }
