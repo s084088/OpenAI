@@ -7,7 +7,7 @@ namespace SyNemo.OpenAI
     internal static class ChatResource
     {
         public static string NewLine = Environment.NewLine;
-        public static string Model = "gpt-3.5-turbo";
+        public static string Model = "text-davinci-003";
 
         public static string AiName = "AI： ";
         public static string UserName = "Nemo： ";

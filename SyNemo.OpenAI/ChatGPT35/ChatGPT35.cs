@@ -1,26 +1,22 @@
-﻿using System;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using SyNemo.OpenAI.ChatGPT.Models;
+﻿using Newtonsoft.Json;
+using SyNemo.OpenAI.ChatGPT35.Models;
 using SyNemo.OpenAI.Comm;
+using System;
+using System.Threading.Tasks;
 
-namespace SyNemo.OpenAI.ChatGPT;
-
-/// <summary>
-/// 对话基础类
-/// </summary>
-internal static class ChatGPT
+namespace SyNemo.OpenAI.ChatGPT35;
+internal class ChatGPT35
 {
     /// <summary>
     /// 发送信息
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    public static async Task<ChatGPTResponse> Ask(ChatGPTRequest request)
+    public static async Task<ChatResponse> Ask(ChatRequest request)
     {
         string str = await HttpHelper.PostChat(request);
 
-        ChatGPTResponse response = JsonConvert.DeserializeObject<ChatGPTResponse>(str);
+        ChatResponse response = JsonConvert.DeserializeObject<ChatResponse>(str);
 
         if (response.error != null)
         {

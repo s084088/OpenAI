@@ -1,10 +1,10 @@
 ﻿using SyNemo.OpenAI;
 
 //注册
-OpenAI.Register("sk" + "-" + "iX2KoAOOGqtgVrLdxg1mT3BlbkFJcE0zCdmKjwRpORStF1DI");
+OpenAI.Register("sk" + "-" + "GHTX95ncrJK6985HPisPT3BlbkFJkbuAC9xtMEZhrPLHqM5O");
 
 //创建会话
-Chat chatGPT = new();
+Chat35 chatGPT = new();
 
 string q1 = "什么是相对论";
 string q2 = "简单介绍一些他的生平";

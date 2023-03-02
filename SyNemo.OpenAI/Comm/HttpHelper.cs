@@ -8,6 +8,7 @@ namespace SyNemo.OpenAI.Comm
     internal static class HttpHelper
     {
         private const string url = "https://api.openai.com/v1/completions";
+        private const string urlChat = "https://api.openai.com/v1/chat/completions";
         private static HttpClient _client;
 
         internal static void Init(string key)
@@ -23,6 +24,20 @@ namespace SyNemo.OpenAI.Comm
                 HttpContent content = GetJsonContent(JsonConvert.SerializeObject(obj));
 
                 return await (await _client.PostAsync(url, content)).Content.ReadAsStringAsync();
+            }
+            catch (Exception e)
+            {
+                throw new OpenAIException(ErrorCode.NetFail, "网络异常", e);
+            }
+        }
+
+        public static async Task<string> PostChat(object obj)
+        {
+            try
+            {
+                HttpContent content = GetJsonContent(JsonConvert.SerializeObject(obj));
+
+                return await (await _client.PostAsync(urlChat, content)).Content.ReadAsStringAsync();
             }
             catch (Exception e)
             {

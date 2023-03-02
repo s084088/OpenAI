@@ -1,17 +1,18 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using AI.Dev.OpenAI.GPT;
 using SyNemo.OpenAI.App.Models;
-using SyNemo.OpenAI.ChatGPT.Models;
+using SyNemo.OpenAI.ChatGPT35.Models;
 using SyNemo.OpenAI.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SyNemo.OpenAI;
 
 /// <summary>
-/// 单个聊天对象
+/// 使用了GPT3.5的聊天应用
 /// </summary>
-public class Chat
+public class Chat35
 {
-    private readonly ChatConfig _config;
+    private readonly Chat35Config _config;
     private readonly List<ChatMessageModel> messages = new();
 
     /// <summary>
@@ -23,7 +24,7 @@ public class Chat
     /// 创建聊天
     /// </summary>
     /// <param name="config">聊天配置</param>
-    public Chat(ChatConfig config = null)
+    public Chat35(Chat35Config config = null)
     {
         _config = config ?? new();
 
@@ -47,10 +48,10 @@ public class Chat
     public async Task<string> Ask(DialogueModel model)
     {
         ChatMessageModel userMessage = new(ChatRole.User, model.Question);
-        string _prompt = GetPrompt(userMessage);
-        ChatGPTRequest request = GetRequest(_prompt);
-        ChatGPTResponse response = await ChatGPT.ChatGPT.Ask(request);
-        ChatMessageModel aiMessage = new(ChatRole.AI, response.choices[0].text.Trim());
+        List<Message> msgs = GetMessages(userMessage);
+        ChatRequest request = GetRequest(msgs);
+        ChatResponse response = await ChatGPT35.ChatGPT35.Ask(request);
+        ChatMessageModel aiMessage = new(ChatRole.AI, response?.choices[0]?.message?.content?.Trim());
 
         userMessage.Tokens = response.usage.prompt_tokens;
         aiMessage.Tokens = response.usage.completion_tokens;
@@ -58,7 +59,7 @@ public class Chat
         messages.Add(userMessage);
         messages.Add(aiMessage);
 
-        model.Prompt = _prompt;
+        model.Prompt = userMessage.Message;
         model.Answer = aiMessage.Message;
         model.SendToken = userMessage.Tokens;
         model.ReceiveToken = aiMessage.Tokens;
@@ -80,11 +81,12 @@ public class Chat
     /// <returns></returns>
     public async Task<string> AskWithOutContext(DialogueModel model)
     {
-        ChatGPTRequest request = GetRequest(model.Question);
-        ChatGPTResponse response = await ChatGPT.ChatGPT.Ask(request);
+        List<Message> msgs = GetMessagesWithOutLog(model.Question);
+        ChatRequest request = GetRequest(msgs);
+        ChatResponse response = await ChatGPT35.ChatGPT35.Ask(request);
 
         model.Prompt = model.Question;
-        model.Answer = response.choices[0].text.Trim();
+        model.Answer = response?.choices[0]?.message?.content?.Trim();
         model.SendToken = response.usage.prompt_tokens;
         model.ReceiveToken = response.usage.completion_tokens;
 
@@ -96,15 +98,10 @@ public class Chat
     /// </summary>
     /// <param name="_prompt"></param>
     /// <returns></returns>
-    private ChatGPTRequest GetRequest(string _prompt) => new()
+    private ChatRequest GetRequest(List<Message> _prompt) => new()
     {
-        model = ChatResource.Model,
-        prompt = _prompt,
-        temperature = _config.Temperature,
-        top_p = _config.Top_p,
-
-        max_tokens = ChatResource.MaxTokens - _prompt.Length * 2,
-        stop = new string[] { ChatResource.UserName, ChatResource.AiName }
+        model = Chat35Resource.Model,
+        messages = _prompt.ToArray(),
     };
 
     /// <summary>
@@ -112,18 +109,43 @@ public class Chat
     /// </summary>
     /// <param name="ask"></param>
     /// <returns></returns>
-    private string GetPrompt(ChatMessageModel ask)
+    private List<Message> GetMessages(ChatMessageModel ask)
     {
-        string prompt = ask.GetMessage() + ChatResource.AiName;
+        int nowTokens = GPT3Tokenizer.Encode(ask.Message).Count;
+        List<Message> msgs = new()
+        {
+            new() { role = "user", content = ask.Message }
+        };
 
         for (int i = messages.Count - 1; i >= 0; i--)
         {
             ChatMessageModel cm = messages[i];
-            string str = cm.GetMessage(); ;
-            if (str.Length + prompt.Length > ChatResource.MaxTokens / 4) break;
-            prompt = str + prompt;
-        }
 
-        return ChatResource.Title + prompt;
+            nowTokens += GPT3Tokenizer.Encode(cm.Message).Count;
+
+            if (nowTokens > Chat35Resource.MaxTokens) break;
+
+            msgs.Add(new()
+            {
+                role = cm.User == ChatRole.User ? "user" : "assistant",
+                content = cm.Message
+            });
+        }
+        msgs.Add(new() { role = "system", content = Chat35Resource.SystemMessage });
+
+        msgs.Reverse();
+
+        return msgs;
+    }
+
+    private List<Message> GetMessagesWithOutLog(string ask)
+    {
+        List<Message> messages = new()
+        {
+            new() { role = "system", content = Chat35Resource.SystemMessage },
+            new() { role = "user", content = ask }
+        };
+
+        return messages;
     }
 }
