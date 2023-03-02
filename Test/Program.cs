@@ -1,7 +1,7 @@
 ﻿using SyNemo.OpenAI;
 
 //注册
-OpenAI.Register("sk" + "-" + "QtOQWB52BRNSfUj3iGFOT3BlbkFJpo48ZGuPMbzbe1uFHoGC");
+OpenAI.Register("sk" + "-" + "iX2KoAOOGqtgVrLdxg1mT3BlbkFJcE0zCdmKjwRpORStF1DI");
 
 //创建会话
 Chat chatGPT = new();
@@ -22,8 +22,7 @@ Console.WriteLine("AI: " + a2);
 Console.WriteLine("我: " + q3);
 Console.WriteLine("AI: " + a3);
 
-
-//对话
+//无上下文
 string b1 = await chatGPT.AskWithOutContext(q1);
 string b2 = await chatGPT.AskWithOutContext(q2);
 string b3 = await chatGPT.AskWithOutContext(q3);
