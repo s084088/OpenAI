@@ -32,4 +32,14 @@ public class Chat35Config
     /// 历史对话
     /// </summary>
     public IEnumerable<IChatMessage> Messages { get; set; }
+
+    /// <summary>
+    /// 系统指令
+    /// </summary>
+    public string SystemCommand { get; set; }
+
+    /// <summary>
+    /// 使用的模型
+    /// </summary>
+    public string Model { get; set; }
 }

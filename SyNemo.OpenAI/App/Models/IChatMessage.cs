@@ -29,6 +29,11 @@
         /// <summary>
         /// AI
         /// </summary>
-        AI = 2
+        AI = 2,
+
+        /// <summary>
+        /// 系统
+        /// </summary>
+        System = 3,
     }
 }

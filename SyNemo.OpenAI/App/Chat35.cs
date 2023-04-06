@@ -14,6 +14,8 @@ public class Chat35
 {
     private readonly Chat35Config _config;
     private readonly List<ChatMessageModel> messages = new();
+    private readonly string systemCommand;
+    private readonly string model;
 
     /// <summary>
     /// 聊天记录
@@ -27,6 +29,9 @@ public class Chat35
     public Chat35(Chat35Config config = null)
     {
         _config = config ?? new();
+
+        systemCommand = _config.SystemCommand ?? Chat35Resource.SystemMessage;
+        model = _config.Model ?? Chat35Resource.Model;
 
         if (_config.Messages != null)
             foreach (IChatMessage m in _config.Messages)
@@ -100,7 +105,7 @@ public class Chat35
     /// <returns></returns>
     private ChatRequest GetRequest(List<Message> _prompt) => new()
     {
-        model = Chat35Resource.Model,
+        model = model,
         messages = _prompt.ToArray(),
     };
 
@@ -131,7 +136,7 @@ public class Chat35
                 content = cm.Message
             });
         }
-        msgs.Add(new() { role = "system", content = Chat35Resource.SystemMessage });
+        msgs.Add(new() { role = "system", content = systemCommand });
 
         msgs.Reverse();
 
@@ -142,7 +147,7 @@ public class Chat35
     {
         List<Message> messages = new()
         {
-            new() { role = "system", content = Chat35Resource.SystemMessage },
+            new() { role = "system", content = systemCommand },
             new() { role = "user", content = ask }
         };
 
