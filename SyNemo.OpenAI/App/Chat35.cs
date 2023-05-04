@@ -16,7 +16,8 @@ public class Chat35
     private readonly List<ChatMessageModel> messages = new();
     private readonly string systemCommand;
     private readonly string model;
-
+    private readonly int maxTokens;
+    
     /// <summary>
     /// 聊天记录
     /// </summary>
@@ -30,8 +31,16 @@ public class Chat35
     {
         _config = config ?? new();
 
-        systemCommand = _config.SystemCommand ?? Chat35Resource.SystemMessage;
-        model = _config.Model ?? Chat35Resource.Model;
+        systemCommand = _config.SystemCommand ?? "You are a helpful assistant.";
+        model = _config.Model ?? "gpt-3.5-turbo";
+        maxTokens= model switch
+        {
+            "gpt-4" => (8192 - GPT3Tokenizer.Encode(systemCommand).Count)/2,
+            "gpt-3.5-turbo" => (4096 - GPT3Tokenizer.Encode(systemCommand).Count)/2,
+            "gpt-3.5" => (2048 - GPT3Tokenizer.Encode(systemCommand).Count) / 2,
+            _ => (2048 - GPT3Tokenizer.Encode(systemCommand).Count) / 2
+        };
+
 
         if (_config.Messages != null)
             foreach (IChatMessage m in _config.Messages)
@@ -128,7 +137,7 @@ public class Chat35
 
             nowTokens += GPT3Tokenizer.Encode(cm.Message).Count;
 
-            if (nowTokens > Chat35Resource.MaxTokens) break;
+            if (nowTokens > maxTokens) break;
 
             msgs.Add(new()
             {

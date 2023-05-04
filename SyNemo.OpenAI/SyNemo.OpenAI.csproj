@@ -4,8 +4,8 @@
 		<TargetFrameworks>net6.0;net7.0;</TargetFrameworks>
 
 		<Authors>Nemo</Authors>
-		<Version>1.1.1</Version>
-		<Description>目前包含 ChatGPT, 1.0为GPT3 , 1.1为GPT3.5</Description>
+		<Version>1.1.2</Version>
+		<Description>目前包含 ChatGPT, 1.1.x增加GPT3.5</Description>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<Title>OpenAI扩展包</Title>
 		<PackageProjectUrl>https://github.com/s084088/OpenAI</PackageProjectUrl>
@@ -13,7 +13,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="AI.Dev.OpenAI.GPT" Version="1.0.2" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	</ItemGroup>
 
 </Project>
